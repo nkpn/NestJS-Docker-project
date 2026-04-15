@@ -46,17 +46,37 @@ import { HealthModule } from './health/health.module';
     // Database
     TypeOrmModule.forRootAsync({
       inject: [ConfigService],
-      useFactory: (config: ConfigService) => ({
-        type: 'postgres',
-        host: config.get<string>('database.host'),
-        port: config.get<number>('database.port'),
-        username: config.get<string>('database.username'),
-        password: config.get<string>('database.password'),
-        database: config.get<string>('database.database'),
-        entities: [join(__dirname, '**', '*.entity.{ts,js}')],
-        synchronize: config.get<string>('nodeEnv') !== 'production',
-        logging: config.get<string>('nodeEnv') === 'development',
-      }),
+      useFactory: (config: ConfigService) => {
+        const databaseUrl = config.get<string>('database.url');
+        const isProduction = config.get<string>('nodeEnv') === 'production';
+
+        const base = {
+          type: 'postgres' as const,
+          entities: [join(__dirname, '**', '*.entity.{ts,js}')],
+          // synchronize in dev/test; use migrations in production
+          synchronize: !isProduction,
+          logging: !isProduction,
+        };
+
+        if (databaseUrl) {
+          // Neon / Render: single connection string with SSL required
+          return {
+            ...base,
+            url: databaseUrl,
+            ssl: { rejectUnauthorized: false },
+          };
+        }
+
+        // Local Docker: individual connection params
+        return {
+          ...base,
+          host: config.get<string>('database.host'),
+          port: config.get<number>('database.port'),
+          username: config.get<string>('database.username'),
+          password: config.get<string>('database.password'),
+          database: config.get<string>('database.database'),
+        };
+      },
     }),
 
     // GraphQL

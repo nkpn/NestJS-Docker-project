@@ -2,6 +2,9 @@ export default () => ({
   port: parseInt(process.env.PORT ?? '3000', 10),
   nodeEnv: process.env.NODE_ENV ?? 'development',
   database: {
+    // DATABASE_URL takes priority (Neon / Render).
+    // Falls back to individual DB_* vars (local Docker).
+    url: process.env.DATABASE_URL,
     host: process.env.DB_HOST,
     port: parseInt(process.env.DB_PORT ?? '5432', 10),
     username: process.env.DB_USERNAME,
