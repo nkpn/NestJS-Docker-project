@@ -1,4 +1,4 @@
-import { ObjectType, Field, ID, Float } from '@nestjs/graphql';
+import { ObjectType, Field, ID, Float, Int } from '@nestjs/graphql';
 import {
   Entity,
   PrimaryGeneratedColumn,
@@ -22,7 +22,7 @@ class StoredOrderItem {
   @Field(() => Float)
   price: number;
 
-  @Field()
+  @Field(() => Int)
   quantity: number;
 }
 
@@ -53,19 +53,19 @@ export class Order {
   @Column('decimal', { precision: 10, scale: 2 })
   totalAmount: number;
 
-  @Field({ nullable: true })
-  @Column({ type: 'timestamp', nullable: true })
+  @Field(() => Date, { nullable: true })
+  @Column({ type: 'timestamptz', nullable: true })
   processedAt: Date | null;
 
-  @Field({ nullable: true })
-  @Column({ nullable: true })
+  @Field(() => String, { nullable: true })
+  @Column({ type: 'text', nullable: true })
   failureReason: string | null;
 
-  @Field()
+  @Field(() => Date)
   @CreateDateColumn()
   createdAt: Date;
 
-  @Field()
+  @Field(() => Date)
   @UpdateDateColumn()
   updatedAt: Date;
 }

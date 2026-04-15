@@ -1,0 +1,129 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type AuthResponse {
+  accessToken: String!
+  user: User!
+}
+
+input CreateOrderInput {
+  items: [OrderItemInput!]!
+}
+
+input CreateProductInput {
+  description: String
+  name: String!
+  price: Float!
+  stock: Int!
+}
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
+input LoginInput {
+  email: String!
+  password: String!
+}
+
+type Mutation {
+  """Create a new order (authenticated users only)"""
+  createOrder(input: CreateOrderInput!): Order!
+
+  """Create a new product (admin only)"""
+  createProduct(input: CreateProductInput!): Product!
+
+  """Login with email and password"""
+  login(input: LoginInput!): AuthResponse!
+
+  """Register a new user"""
+  register(input: RegisterInput!): AuthResponse!
+
+  """Update product stock (admin only)"""
+  updateStock(input: UpdateStockInput!): Product!
+}
+
+type Order {
+  createdAt: DateTime!
+  failureReason: String
+  id: ID!
+  items: [StoredOrderItem!]!
+  processedAt: DateTime
+  status: OrderStatus!
+  totalAmount: Float!
+  updatedAt: DateTime!
+  userId: ID!
+}
+
+input OrderItemInput {
+  productId: ID!
+  quantity: Int!
+}
+
+enum OrderStatus {
+  COMPLETED
+  FAILED
+  PENDING
+  PROCESSING
+}
+
+type Product {
+  createdAt: DateTime!
+  description: String!
+  id: ID!
+  name: String!
+  price: Float!
+  stock: Int!
+  updatedAt: DateTime!
+}
+
+type Query {
+  """Get current authenticated user"""
+  me: User!
+
+  """Get all orders of the current user"""
+  myOrders: [Order!]!
+
+  """Get order by ID (owner or admin)"""
+  order(id: ID!): Order!
+
+  """Get product by ID"""
+  product(id: ID!): Product!
+
+  """List all products"""
+  products: [Product!]!
+}
+
+input RegisterInput {
+  email: String!
+  name: String!
+  password: String!
+}
+
+enum Role {
+  ADMIN
+  USER
+}
+
+type StoredOrderItem {
+  price: Float!
+  productId: ID!
+  productName: String!
+  quantity: Int!
+}
+
+input UpdateStockInput {
+  productId: ID!
+  stock: Int!
+}
+
+type User {
+  createdAt: DateTime!
+  email: String!
+  id: ID!
+  name: String!
+  role: Role!
+  updatedAt: DateTime!
+}

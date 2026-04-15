@@ -30,11 +30,11 @@ export class Product {
   @Column({ default: 0 })
   stock: number;
 
-  @Field()
+  @Field(() => Date)
   @CreateDateColumn()
   createdAt: Date;
 
-  @Field()
+  @Field(() => Date)
   @UpdateDateColumn()
   updatedAt: Date;
 }

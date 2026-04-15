@@ -21,6 +21,7 @@
   },
   "dependencies": {
     "@apollo/server": "^5.5.0",
+    "@as-integrations/express5": "^1.1.2",
     "@nestjs/apollo": "^13.2.4",
     "@nestjs/bull": "^11.0.4",
     "@nestjs/common": "^11.0.1",
@@ -36,7 +37,6 @@
     "@willsoto/nestjs-prometheus": "^6.1.0",
     "amqp-connection-manager": "^5.0.0",
     "amqplib": "^1.0.3",
-    "apollo-server-express": "^3.13.0",
     "bcryptjs": "^3.0.3",
     "bull": "^4.16.5",
     "graphql": "^16.13.2",
