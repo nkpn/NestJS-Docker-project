@@ -1,6 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication, ValidationPipe } from '@nestjs/common';
 import request from 'supertest';
+import * as bcrypt from 'bcryptjs';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { DataSource, Repository } from 'typeorm';
 import { AppModule } from '../src/app.module';
@@ -79,8 +80,7 @@ describe('Order flow (e2e)', () => {
     const usersRepo = moduleFixture.get<Repository<User>>(
       getRepositoryToken(User),
     );
-    const bcryptModule: typeof import('bcryptjs') = await import('bcryptjs');
-    const hash = await bcryptModule.hash('admin123', 10);
+    const hash = await bcrypt.hash('admin123', 10);
     const adminUser = usersRepo.create({
       email: 'admin@test.com',
       name: 'Admin',
