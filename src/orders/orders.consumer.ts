@@ -54,7 +54,9 @@ export class OrdersConsumer implements OnModuleInit {
     try {
       await this.ordersService.processOrder(orderId, messageId);
       channel.ack(msg);
-      this.logger.log(`result=success messageId=${messageId} orderId=${orderId}`);
+      this.logger.log(
+        `result=success messageId=${messageId} orderId=${orderId}`,
+      );
     } catch (err) {
       const error = err as Error;
       const nextAttempt = attempt + 1;

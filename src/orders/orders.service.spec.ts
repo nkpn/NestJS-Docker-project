@@ -61,8 +61,14 @@ describe('OrdersService', () => {
         { provide: getRepositoryToken(Order), useFactory: mockOrdersRepo },
         { provide: RabbitmqService, useFactory: mockRabbitmqService },
         { provide: DataSource, useFactory: mockDataSource },
-        { provide: 'PROM_METRIC_ORDERS_CREATED_TOTAL', useFactory: mockCounter },
-        { provide: 'PROM_METRIC_ORDERS_PROCESSED_TOTAL', useFactory: mockCounter },
+        {
+          provide: 'PROM_METRIC_ORDERS_CREATED_TOTAL',
+          useFactory: mockCounter,
+        },
+        {
+          provide: 'PROM_METRIC_ORDERS_PROCESSED_TOTAL',
+          useFactory: mockCounter,
+        },
       ],
     }).compile();
 
@@ -78,7 +84,12 @@ describe('OrdersService', () => {
   describe('createOrder', () => {
     const userId = 'user-uuid';
     const input = { items: [{ productId: 'prod-uuid', quantity: 2 }] };
-    const product = { id: 'prod-uuid', name: 'Test Product', price: 50, stock: 10 };
+    const product = {
+      id: 'prod-uuid',
+      name: 'Test Product',
+      price: 50,
+      stock: 10,
+    };
 
     it('creates order when stock is sufficient', async () => {
       (mockQueryRunner.manager.findOne as jest.Mock).mockResolvedValue(product);
@@ -156,7 +167,9 @@ describe('OrdersService', () => {
   // ──────────────────────────────────────────────────────────
   describe('processOrder', () => {
     it('transitions PENDING order to COMPLETED', async () => {
-      (mockQueryRunner.manager.insert as jest.Mock).mockResolvedValue(undefined);
+      (mockQueryRunner.manager.insert as jest.Mock).mockResolvedValue(
+        undefined,
+      );
       (mockQueryRunner.manager.findOne as jest.Mock).mockResolvedValue({
         id: 'order-uuid',
         status: OrderStatus.PENDING,
@@ -188,7 +201,9 @@ describe('OrdersService', () => {
     });
 
     it('skips already non-PENDING orders without updating', async () => {
-      (mockQueryRunner.manager.insert as jest.Mock).mockResolvedValue(undefined);
+      (mockQueryRunner.manager.insert as jest.Mock).mockResolvedValue(
+        undefined,
+      );
       (mockQueryRunner.manager.findOne as jest.Mock).mockResolvedValue({
         id: 'order-uuid',
         status: OrderStatus.COMPLETED,
@@ -201,7 +216,9 @@ describe('OrdersService', () => {
     });
 
     it('throws and rolls back for unknown order', async () => {
-      (mockQueryRunner.manager.insert as jest.Mock).mockResolvedValue(undefined);
+      (mockQueryRunner.manager.insert as jest.Mock).mockResolvedValue(
+        undefined,
+      );
       (mockQueryRunner.manager.findOne as jest.Mock).mockResolvedValue(null);
 
       await expect(

@@ -26,18 +26,14 @@ export class ProductsResolver {
   @Mutation(() => Product, { description: 'Create a new product (admin only)' })
   @UseGuards(GqlAuthGuard, RolesGuard)
   @Roles(Role.ADMIN)
-  createProduct(
-    @Args('input') input: CreateProductInput,
-  ): Promise<Product> {
+  createProduct(@Args('input') input: CreateProductInput): Promise<Product> {
     return this.productsService.create(input);
   }
 
   @Mutation(() => Product, { description: 'Update product stock (admin only)' })
   @UseGuards(GqlAuthGuard, RolesGuard)
   @Roles(Role.ADMIN)
-  updateStock(
-    @Args('input') input: UpdateStockInput,
-  ): Promise<Product> {
+  updateStock(@Args('input') input: UpdateStockInput): Promise<Product> {
     return this.productsService.updateStock(input.productId, input.stock);
   }
 }

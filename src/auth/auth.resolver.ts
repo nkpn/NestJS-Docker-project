@@ -13,7 +13,9 @@ export class AuthResolver {
     return this.authService.register(input.email, input.name, input.password);
   }
 
-  @Mutation(() => AuthResponse, { description: 'Login with email and password' })
+  @Mutation(() => AuthResponse, {
+    description: 'Login with email and password',
+  })
   async login(@Args('input') input: LoginInput): Promise<AuthResponse> {
     return this.authService.login(input.email, input.password);
   }

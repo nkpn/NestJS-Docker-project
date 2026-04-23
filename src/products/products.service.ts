@@ -35,10 +35,7 @@ export class ProductsService {
     return this.productsRepo.save(product);
   }
 
-  async decrementStock(
-    productId: string,
-    quantity: number,
-  ): Promise<Product> {
+  async decrementStock(productId: string, quantity: number): Promise<Product> {
     const product = await this.findById(productId);
     if (product.stock < quantity) {
       throw new Error(

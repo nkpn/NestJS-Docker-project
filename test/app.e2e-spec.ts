@@ -117,7 +117,14 @@ describe('Order flow (e2e)', () => {
         createProduct(input: $input) { id name price stock }
       }
     `,
-      { input: { name: 'Widget', description: 'A fine widget', price: 29.99, stock: 100 } },
+      {
+        input: {
+          name: 'Widget',
+          description: 'A fine widget',
+          price: 29.99,
+          stock: 100,
+        },
+      },
       adminToken,
     );
     expect(res.status).toBe(200);

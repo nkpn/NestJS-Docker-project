@@ -18,7 +18,10 @@ export class CreateOrderInput {
   @Type(() => OrderItemInput)
   items: OrderItemInput[];
 
-  @Field(() => String, { nullable: true, description: 'Deduplicate retried mutations' })
+  @Field(() => String, {
+    nullable: true,
+    description: 'Deduplicate retried mutations',
+  })
   @IsOptional()
   @IsString()
   idempotencyKey?: string;

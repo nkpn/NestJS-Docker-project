@@ -114,9 +114,7 @@ export class OrdersService {
         attempt: 0,
         createdAt: new Date().toISOString(),
       });
-      this.logger.log(
-        `Order ${saved.id} published messageId=${messageId}`,
-      );
+      this.logger.log(`Order ${saved.id} published messageId=${messageId}`);
 
       return saved;
     } catch (err) {
@@ -164,9 +162,7 @@ export class OrdersService {
 
       await queryRunner.commitTransaction();
       this.ordersProcessedCounter.inc({ status: 'completed' });
-      this.logger.log(
-        `Order ${orderId} → COMPLETED messageId=${messageId}`,
-      );
+      this.logger.log(`Order ${orderId} → COMPLETED messageId=${messageId}`);
     } catch (err) {
       await queryRunner.rollbackTransaction();
       if ((err as { code?: string }).code === '23505') {
@@ -261,7 +257,9 @@ export class OrdersService {
       qb.andWhere('order.status = :status', { status: filter.status });
     }
     if (filter.dateFrom) {
-      qb.andWhere('order.createdAt >= :dateFrom', { dateFrom: filter.dateFrom });
+      qb.andWhere('order.createdAt >= :dateFrom', {
+        dateFrom: filter.dateFrom,
+      });
     }
     if (filter.dateTo) {
       qb.andWhere('order.createdAt <= :dateTo', { dateTo: filter.dateTo });

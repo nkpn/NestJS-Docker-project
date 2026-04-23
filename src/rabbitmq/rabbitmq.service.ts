@@ -59,18 +59,17 @@ export class RabbitmqService implements OnModuleInit, OnModuleDestroy {
     this.logger.log('RabbitMQ connected, queues declared');
   }
 
-  async publish(queue: string, message: object): Promise<void> {
+  publish(queue: string, message: object): Promise<void> {
     if (!this.channel) throw new Error('RabbitMQ channel not initialized');
-    this.channel.sendToQueue(
-      queue,
-      Buffer.from(JSON.stringify(message)),
-      { persistent: true },
-    );
+    this.channel.sendToQueue(queue, Buffer.from(JSON.stringify(message)), {
+      persistent: true,
+    });
+    return Promise.resolve();
   }
 
   /** Publish a message to the retry queue with a TTL-based delay.
    *  After the TTL expires the broker routes it back to ORDER_QUEUE. */
-  async publishToRetry(message: object, delayMs: number): Promise<void> {
+  publishToRetry(message: object, delayMs: number): Promise<void> {
     if (!this.channel) throw new Error('RabbitMQ channel not initialized');
     this.channel.sendToQueue(
       ORDER_RETRY_QUEUE,
@@ -80,16 +79,16 @@ export class RabbitmqService implements OnModuleInit, OnModuleDestroy {
         expiration: String(delayMs),
       },
     );
+    return Promise.resolve();
   }
 
   /** Publish a message directly to the dead-letter queue (terminal failure). */
-  async publishToDlq(message: object): Promise<void> {
+  publishToDlq(message: object): Promise<void> {
     if (!this.channel) throw new Error('RabbitMQ channel not initialized');
-    this.channel.sendToQueue(
-      ORDER_DLQ,
-      Buffer.from(JSON.stringify(message)),
-      { persistent: true },
-    );
+    this.channel.sendToQueue(ORDER_DLQ, Buffer.from(JSON.stringify(message)), {
+      persistent: true,
+    });
+    return Promise.resolve();
   }
 
   async consume(
@@ -98,14 +97,12 @@ export class RabbitmqService implements OnModuleInit, OnModuleDestroy {
   ): Promise<void> {
     if (!this.channel) throw new Error('RabbitMQ channel not initialized');
     await this.channel.prefetch(1);
-    await this.channel.consume(queue, async (msg) => {
+    await this.channel.consume(queue, (msg) => {
       if (!msg) return;
-      try {
-        await handler(msg, this.channel!);
-      } catch (err) {
+      void handler(msg, this.channel!).catch((err: unknown) => {
         this.logger.error('Consumer handler threw, nacking to DLQ', err);
         this.channel!.nack(msg, false, false);
-      }
+      });
     });
     this.logger.log(`Consumer registered on queue: ${queue}`);
   }
