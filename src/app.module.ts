@@ -9,6 +9,7 @@ import { join } from 'path';
 
 import configuration from './config/configuration';
 import { envValidationSchema } from './config/env.validation';
+import { resolveEnvFilePath } from './config/env-file';
 
 import { RabbitmqModule } from './rabbitmq/rabbitmq.module';
 import { AuthModule } from './auth/auth.module';
@@ -24,6 +25,7 @@ import { HealthModule } from './health/health.module';
       isGlobal: true,
       load: [configuration],
       validationSchema: envValidationSchema,
+      envFilePath: resolveEnvFilePath(),
     }),
 
     // Logger (Pino)

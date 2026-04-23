@@ -1,8 +1,9 @@
 import { DataSource } from 'typeorm';
 import * as dotenv from 'dotenv';
 import { join } from 'path';
+import { resolveEnvFilePath } from './config/env-file';
 
-dotenv.config();
+dotenv.config({ path: resolveEnvFilePath() });
 
 const hasDatabaseUrl = Boolean(process.env.DATABASE_URL);
 
