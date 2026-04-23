@@ -50,6 +50,7 @@ import { HealthModule } from './health/health.module';
       inject: [ConfigService],
       useFactory: (config: ConfigService) => {
         const databaseUrl = config.get<string>('database.url');
+        const databaseSsl = config.get<boolean>('database.ssl');
         const isProduction = config.get<string>('nodeEnv') === 'production';
 
         const base = {
@@ -65,7 +66,7 @@ import { HealthModule } from './health/health.module';
           return {
             ...base,
             url: databaseUrl,
-            ssl: { rejectUnauthorized: false },
+            ...(databaseSsl ? { ssl: { rejectUnauthorized: false } } : {}),
           };
         }
 
