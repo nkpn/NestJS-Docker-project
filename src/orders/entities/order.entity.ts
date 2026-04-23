@@ -7,6 +7,7 @@ import {
   UpdateDateColumn,
   ManyToOne,
   JoinColumn,
+  Index,
 } from 'typeorm';
 import { User } from '../../users/entities/user.entity';
 import { OrderStatus } from '../enums/order-status.enum';
@@ -28,12 +29,14 @@ class StoredOrderItem {
 
 @ObjectType()
 @Entity('orders')
+@Index('idx_orders_status_created_at', ['status', 'createdAt'])
 export class Order {
   @Field(() => ID)
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
   @Field(() => ID)
+  @Index('idx_orders_user_id')
   @Column()
   userId: string;
 
@@ -52,6 +55,11 @@ export class Order {
   @Field(() => Float)
   @Column('decimal', { precision: 10, scale: 2 })
   totalAmount: number;
+
+  @Field(() => String, { nullable: true })
+  @Index('idx_orders_idempotency_key', { unique: true, sparse: true })
+  @Column({ type: 'text', unique: true, nullable: true, default: null })
+  idempotencyKey: string | null;
 
   @Field(() => Date, { nullable: true })
   @Column({ type: 'timestamptz', nullable: true })

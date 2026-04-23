@@ -8,8 +8,13 @@ import { ConfigService } from '@nestjs/config';
 import * as amqp from 'amqplib';
 
 export const ORDER_QUEUE = 'order_queue';
+export const ORDER_RETRY_QUEUE = 'order_queue_retry';
 export const ORDER_DLQ = 'order_dlq';
 const ORDER_DLX = 'order_dlx';
+
+export const MAX_RETRY_ATTEMPTS = 3;
+export const RETRY_BASE_DELAY_MS = 1000;
+export const RETRY_MAX_DELAY_MS = 30_000;
 
 @Injectable()
 export class RabbitmqService implements OnModuleInit, OnModuleDestroy {
@@ -28,17 +33,26 @@ export class RabbitmqService implements OnModuleInit, OnModuleDestroy {
     this.connection = await amqp.connect(url);
     this.channel = await this.connection.createChannel();
 
-    // Dead-letter exchange + queue
+    // Dead-letter exchange — terminal destination for exhausted messages
     await this.channel.assertExchange(ORDER_DLX, 'direct', { durable: true });
     await this.channel.assertQueue(ORDER_DLQ, { durable: true });
     await this.channel.bindQueue(ORDER_DLQ, ORDER_DLX, 'order.dead');
 
-    // Main queue — failed messages go to DLQ
+    // Main queue — messages that exhaust retries go to DLX
     await this.channel.assertQueue(ORDER_QUEUE, {
       durable: true,
       arguments: {
         'x-dead-letter-exchange': ORDER_DLX,
         'x-dead-letter-routing-key': 'order.dead',
+      },
+    });
+
+    // Retry queue — per-message TTL; expired messages route back to ORDER_QUEUE
+    await this.channel.assertQueue(ORDER_RETRY_QUEUE, {
+      durable: true,
+      arguments: {
+        'x-dead-letter-exchange': '',
+        'x-dead-letter-routing-key': ORDER_QUEUE,
       },
     });
 
@@ -49,6 +63,30 @@ export class RabbitmqService implements OnModuleInit, OnModuleDestroy {
     if (!this.channel) throw new Error('RabbitMQ channel not initialized');
     this.channel.sendToQueue(
       queue,
+      Buffer.from(JSON.stringify(message)),
+      { persistent: true },
+    );
+  }
+
+  /** Publish a message to the retry queue with a TTL-based delay.
+   *  After the TTL expires the broker routes it back to ORDER_QUEUE. */
+  async publishToRetry(message: object, delayMs: number): Promise<void> {
+    if (!this.channel) throw new Error('RabbitMQ channel not initialized');
+    this.channel.sendToQueue(
+      ORDER_RETRY_QUEUE,
+      Buffer.from(JSON.stringify(message)),
+      {
+        persistent: true,
+        expiration: String(delayMs),
+      },
+    );
+  }
+
+  /** Publish a message directly to the dead-letter queue (terminal failure). */
+  async publishToDlq(message: object): Promise<void> {
+    if (!this.channel) throw new Error('RabbitMQ channel not initialized');
+    this.channel.sendToQueue(
+      ORDER_DLQ,
       Buffer.from(JSON.stringify(message)),
       { persistent: true },
     );
@@ -65,7 +103,7 @@ export class RabbitmqService implements OnModuleInit, OnModuleDestroy {
       try {
         await handler(msg, this.channel!);
       } catch (err) {
-        this.logger.error('Consumer handler threw, sending to DLQ', err);
+        this.logger.error('Consumer handler threw, nacking to DLQ', err);
         this.channel!.nack(msg, false, false);
       }
     });

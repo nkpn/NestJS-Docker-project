@@ -1,16 +1,14 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import {
-  makeCounterProvider,
-} from '@willsoto/nestjs-prometheus';
+import { makeCounterProvider } from '@willsoto/nestjs-prometheus';
 import { Order } from './entities/order.entity';
+import { ProcessedMessage } from './entities/processed-message.entity';
 import { OrdersService } from './orders.service';
 import { OrdersResolver } from './orders.resolver';
 import { OrdersConsumer } from './orders.consumer';
-import { ProductsModule } from '../products/products.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Order]), ProductsModule],
+  imports: [TypeOrmModule.forFeature([Order, ProcessedMessage])],
   providers: [
     OrdersService,
     OrdersResolver,
