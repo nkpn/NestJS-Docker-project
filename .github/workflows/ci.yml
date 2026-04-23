@@ -122,6 +122,14 @@ jobs:
             -e DB_DATABASE=nestdb \
             -e JWT_SECRET=test-secret \
             -e RABBITMQ_URL=amqp://guest:guest@localhost:5672 \
-            nestjs-orders-api:${{ github.sha }} || true
-          sleep 2
+            nestjs-orders-api:${{ github.sha }}
+
+          # Fail the job if the container exits immediately.
+          sleep 5
+          if ! docker ps --filter "name=test-container" --filter "status=running" --format '{{.Names}}' | grep -q '^test-container$'; then
+            echo "Container failed to stay running. Logs:"
+            docker logs test-container || true
+            exit 1
+          fi
+
           docker stop test-container 2>/dev/null || true

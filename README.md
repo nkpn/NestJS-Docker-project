@@ -66,6 +66,30 @@ Order status: PENDING → COMPLETED | FAILED
 ### Prerequisites
 - Docker & Docker Compose v2
 
+### Environment profiles
+
+The app loads exactly one env file based on `NODE_ENV`:
+
+- `NODE_ENV=development` → `.env.development`
+- `NODE_ENV=test` → `.env.test`
+- `NODE_ENV=production` → `.env.production`
+- fallback (if the specific file is missing) → `.env`
+
+The same rule is used by TypeORM CLI (`src/data-source.ts`) for migrations.
+
+Create local env files from templates:
+
+```bash
+cp .env.development.example .env.development
+cp .env.test.example .env.test
+cp .env.production.example .env.production
+```
+
+For local `npm run start:dev` (app on host), use `localhost` in
+`.env.development` for `DB_HOST` and `RABBITMQ_URL`.
+If the app runs inside Docker Compose, service DNS names (`postgres`, `rabbitmq`)
+are injected by `docker-compose.yml`.
+
 ### Run in one command
 
 ```bash
@@ -99,8 +123,9 @@ npm run migration:revert
 ```
 
 `src/data-source.ts` is the TypeORM CLI entry point — it reads the same
-`.env` variables as the application and supports both `DATABASE_URL` (Neon/Render)
-and individual `DB_*` vars (local Docker).
+environment profile as the application (`.env.<NODE_ENV>` or fallback `.env`)
+and supports both `DATABASE_URL` (Neon/Render) and individual `DB_*` vars
+(local Docker).
 
 ---
 
@@ -288,10 +313,9 @@ npm run test
 npm run test:cov
 
 # E2E tests (requires PostgreSQL running)
-# Either run docker compose up postgres, or set env vars below:
-DB_HOST=localhost DB_USERNAME=nestuser DB_PASSWORD=nestpassword \
-DB_DATABASE=nestdb_test JWT_SECRET=test RABBITMQ_URL=amqp://localhost \
-npm run test:e2e
+# 1) Ensure .env.test exists
+# 2) Run Postgres locally (for example: docker compose up -d postgres)
+NODE_ENV=test npm run test:e2e
 ```
 
 ---
@@ -312,7 +336,10 @@ npm run test:e2e
 | `JWT_EXPIRES_IN` | Token expiry | no (default: `7d`) |
 | `RABBITMQ_URL` | AMQP URL | yes |
 
-Copy `.env.example` → `.env` for local development.
+Use environment-specific files:
+- `.env.development` for local development
+- `.env.test` for tests
+- `.env.production` for deployment
 
 ---
 
@@ -328,8 +355,7 @@ Copy `.env.example` → `.env` for local development.
 
 ## Deployed Instance
 
-> **Render:** https://nestjs-orders-api.onrender.com
-
+> **Render:** https://nestjs-docker-project.onrender.com
 ---
 
 ## CI/CD Pipeline
