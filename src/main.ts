@@ -33,4 +33,4 @@ async function bootstrap() {
   console.log(`Metrics: http://localhost:${port}/metrics`);
 }
 
-bootstrap();
+void bootstrap();
