@@ -6,7 +6,6 @@ import {
 } from '@testcontainers/postgresql';
 import { DataSource } from 'typeorm';
 
-import { AppModule } from '../../src/app.module';
 import { GqlHttpExceptionFilter } from '../../src/common/filters/gql-exception.filter';
 import { RabbitmqService } from '../../src/rabbitmq/rabbitmq.service';
 
@@ -33,6 +32,13 @@ export async function startPostgresContainer(): Promise<StartedPostgreSqlContain
 }
 
 export async function bootstrapIntegrationApp(): Promise<IntegrationContext> {
+  // Lazy-load AppModule after env vars are set in beforeAll.
+  // Jest runs this suite in CommonJS mode, so dynamic import is not available here.
+
+  const { AppModule } = jest.requireActual<
+    typeof import('../../src/app.module')
+  >('../../src/app.module');
+
   const moduleFixture: TestingModule = await Test.createTestingModule({
     imports: [AppModule],
   })
