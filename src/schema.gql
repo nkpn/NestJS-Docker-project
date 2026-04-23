@@ -8,6 +8,8 @@ type AuthResponse {
 }
 
 input CreateOrderInput {
+  """Deduplicate retried mutations"""
+  idempotencyKey: String
   items: [OrderItemInput!]!
 }
 
@@ -49,6 +51,7 @@ type Order {
   createdAt: DateTime!
   failureReason: String
   id: ID!
+  idempotencyKey: String
   items: [StoredOrderItem!]!
   processedAt: DateTime
   status: OrderStatus!
@@ -69,6 +72,28 @@ enum OrderStatus {
   PROCESSING
 }
 
+type OrdersConnection {
+  nodes: [Order!]!
+  pageInfo: PageInfo!
+  totalCount: Int!
+}
+
+input OrdersFilterInput {
+  dateFrom: DateTime
+  dateTo: DateTime
+  status: OrderStatus
+}
+
+input OrdersPaginationInput {
+  limit: Int! = 20
+  offset: Int! = 0
+}
+
+type PageInfo {
+  hasNextPage: Boolean!
+  hasPreviousPage: Boolean!
+}
+
 type Product {
   createdAt: DateTime!
   description: String!
@@ -83,11 +108,14 @@ type Query {
   """Get current authenticated user"""
   me: User!
 
-  """Get all orders of the current user"""
-  myOrders: [Order!]!
+  """Paginated orders for the current user with optional filters"""
+  myOrders(filter: OrdersFilterInput, pagination: OrdersPaginationInput): OrdersConnection!
 
   """Get order by ID (owner or admin)"""
   order(id: ID!): Order!
+
+  """All orders with optional filters (admin only)"""
+  orders(filter: OrdersFilterInput, pagination: OrdersPaginationInput): OrdersConnection!
 
   """Get product by ID"""
   product(id: ID!): Product!

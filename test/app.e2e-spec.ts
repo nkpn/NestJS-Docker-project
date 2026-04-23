@@ -2,12 +2,10 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication, ValidationPipe } from '@nestjs/common';
 import request from 'supertest';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { DataSource } from 'typeorm';
+import { DataSource, Repository } from 'typeorm';
 import { AppModule } from '../src/app.module';
 import { GqlHttpExceptionFilter } from '../src/common/filters/gql-exception.filter';
 import { User } from '../src/users/entities/user.entity';
-import { Product } from '../src/products/entities/product.entity';
-import { Order } from '../src/orders/entities/order.entity';
 import { Role } from '../src/users/enums/role.enum';
 import { OrderStatus } from '../src/orders/enums/order-status.enum';
 import { RabbitmqService } from '../src/rabbitmq/rabbitmq.service';
@@ -20,12 +18,37 @@ import { RabbitmqService } from '../src/rabbitmq/rabbitmq.service';
  * requiring an actual broker during CI.
  */
 describe('Order flow (e2e)', () => {
+  type GraphqlResponse<TData> = {
+    data?: TData;
+    errors?: Array<{ message: string }>;
+  };
+
+  const getResponseBody = <T>(res: request.Response): T => {
+    const body: unknown = res.body;
+    return body as T;
+  };
+
+  const expectGraphqlSuccess = <TData>(res: request.Response): TData => {
+    const body = getResponseBody<GraphqlResponse<TData>>(res);
+    expect(body.errors).toBeUndefined();
+    expect(body.data).toBeDefined();
+    return body.data as TData;
+  };
+
+  const expectGraphqlErrors = (res: request.Response): void => {
+    const body = getResponseBody<GraphqlResponse<Record<string, unknown>>>(res);
+    expect(body.errors).toBeDefined();
+  };
+
   let app: INestApplication;
   let dataSource: DataSource;
   let adminToken: string;
   let userToken: string;
   let productId: string;
   let orderId: string;
+
+  const getHttpServer = (): Parameters<typeof request>[0] =>
+    app.getHttpServer() as Parameters<typeof request>[0];
 
   const mockRabbitmq = {
     onModuleInit: jest.fn(),
@@ -53,17 +76,18 @@ describe('Order flow (e2e)', () => {
     dataSource = moduleFixture.get(DataSource);
 
     // Seed an admin user directly via repo (bypass bcrypt for speed)
-    const usersRepo = moduleFixture.get(getRepositoryToken(User));
-    const bcrypt = await import('bcryptjs');
-    const hash = await bcrypt.hash('admin123', 10);
-    await usersRepo.save(
-      usersRepo.create({
-        email: 'admin@test.com',
-        name: 'Admin',
-        passwordHash: hash,
-        role: Role.ADMIN,
-      }),
+    const usersRepo = moduleFixture.get<Repository<User>>(
+      getRepositoryToken(User),
     );
+    const bcryptModule: typeof import('bcryptjs') = await import('bcryptjs');
+    const hash = await bcryptModule.hash('admin123', 10);
+    const adminUser = usersRepo.create({
+      email: 'admin@test.com',
+      name: 'Admin',
+      passwordHash: hash,
+      role: Role.ADMIN,
+    });
+    await usersRepo.save(adminUser);
   });
 
   afterAll(async () => {
@@ -74,8 +98,12 @@ describe('Order flow (e2e)', () => {
     await app.close();
   });
 
-  const gql = (query: string, variables?: object, token?: string) => {
-    const req = request(app.getHttpServer())
+  const gql = (
+    query: string,
+    variables?: Record<string, unknown>,
+    token?: string,
+  ) => {
+    const req = request(getHttpServer())
       .post('/graphql')
       .send({ query, variables });
     if (token) req.set('Authorization', `Bearer ${token}`);
@@ -92,8 +120,10 @@ describe('Order flow (e2e)', () => {
       }
     `);
     expect(res.status).toBe(200);
-    expect(res.body.errors).toBeUndefined();
-    userToken = res.body.data.register.accessToken;
+    const data = expectGraphqlSuccess<{ register: { accessToken: string } }>(
+      res,
+    );
+    userToken = data.register.accessToken;
     expect(userToken).toBeDefined();
   });
 
@@ -106,7 +136,8 @@ describe('Order flow (e2e)', () => {
       }
     `);
     expect(res.status).toBe(200);
-    adminToken = res.body.data.login.accessToken;
+    const data = expectGraphqlSuccess<{ login: { accessToken: string } }>(res);
+    adminToken = data.login.accessToken;
     expect(adminToken).toBeDefined();
   });
 
@@ -128,8 +159,8 @@ describe('Order flow (e2e)', () => {
       adminToken,
     );
     expect(res.status).toBe(200);
-    expect(res.body.errors).toBeUndefined();
-    productId = res.body.data.createProduct.id;
+    const data = expectGraphqlSuccess<{ createProduct: { id: string } }>(res);
+    productId = data.createProduct.id;
     expect(productId).toBeDefined();
   });
 
@@ -147,8 +178,10 @@ describe('Order flow (e2e)', () => {
       userToken,
     );
     expect(res.status).toBe(200);
-    expect(res.body.errors).toBeUndefined();
-    const order = res.body.data.createOrder;
+    const data = expectGraphqlSuccess<{
+      createOrder: { id: string; status: OrderStatus; totalAmount: number };
+    }>(res);
+    const order = data.createOrder;
     orderId = order.id;
     expect(order.status).toBe(OrderStatus.PENDING);
     expect(Number(order.totalAmount)).toBeCloseTo(59.98);
@@ -165,8 +198,8 @@ describe('Order flow (e2e)', () => {
       userToken,
     );
     expect(res.status).toBe(200);
-    expect(res.body.errors).toBeUndefined();
-    expect(res.body.data.order.id).toBe(orderId);
+    const data = expectGraphqlSuccess<{ order: { id: string } }>(res);
+    expect(data.order.id).toBe(orderId);
   });
 
   it('6. another user cannot access the order', async () => {
@@ -177,14 +210,17 @@ describe('Order flow (e2e)', () => {
         }
       }
     `);
-    const otherToken = regRes.body.data.register.accessToken;
+    const regData = expectGraphqlSuccess<{ register: { accessToken: string } }>(
+      regRes,
+    );
+    const otherToken = regData.register.accessToken;
 
     const res = await gql(
       `query { order(id: "${orderId}") { id } }`,
       undefined,
       otherToken,
     );
-    expect(res.body.errors).toBeDefined();
+    expectGraphqlErrors(res);
   });
 
   it('7. createOrder fails with invalid input (empty items)', async () => {
@@ -197,7 +233,7 @@ describe('Order flow (e2e)', () => {
       { input: { items: [] } },
       userToken,
     );
-    expect(res.body.errors).toBeDefined();
+    expectGraphqlErrors(res);
   });
 
   it('8. createOrder fails with insufficient stock', async () => {
@@ -210,12 +246,13 @@ describe('Order flow (e2e)', () => {
       { input: { items: [{ productId, quantity: 9999 }] } },
       userToken,
     );
-    expect(res.body.errors).toBeDefined();
+    expectGraphqlErrors(res);
   });
 
   it('9. health endpoint returns ok', async () => {
-    const res = await request(app.getHttpServer()).get('/health');
+    const res = await request(getHttpServer()).get('/health');
     expect(res.status).toBe(200);
-    expect(res.body.status).toBe('ok');
+    const body = getResponseBody<{ status: string }>(res);
+    expect(body.status).toBe('ok');
   });
 });
