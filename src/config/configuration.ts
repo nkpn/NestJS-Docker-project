@@ -5,6 +5,7 @@ export default () => ({
     // DATABASE_URL takes priority (Neon / Render).
     // Falls back to individual DB_* vars (local Docker).
     url: process.env.DATABASE_URL,
+    ssl: process.env.DATABASE_SSL === 'true',
     host: process.env.DB_HOST,
     port: parseInt(process.env.DB_PORT ?? '5432', 10),
     username: process.env.DB_USERNAME,

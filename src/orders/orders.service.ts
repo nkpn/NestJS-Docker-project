@@ -19,6 +19,8 @@ import { OrdersPaginationInput } from './dto/orders-pagination.input';
 import { OrdersConnection } from './dto/orders-connection';
 import { Product } from '../products/entities/product.entity';
 import { RabbitmqService, ORDER_QUEUE } from '../rabbitmq/rabbitmq.service';
+import { roundMoney } from '../common/utils/money';
+import { buildOrderMessage } from './contracts/order-message.contract';
 
 @Injectable()
 export class OrdersService {
@@ -94,26 +96,29 @@ export class OrdersService {
         });
       }
 
+      const roundedTotalAmount = roundMoney(totalAmount);
+
       const order = queryRunner.manager.create(Order, {
         userId,
         items: storedItems,
         status: OrderStatus.PENDING,
-        totalAmount,
+        totalAmount: roundedTotalAmount,
         idempotencyKey: input.idempotencyKey ?? null,
       });
       const saved = await queryRunner.manager.save(order);
       await queryRunner.commitTransaction();
 
       this.ordersCreatedCounter.inc();
-      this.logger.log(`Order created: ${saved.id} total=${totalAmount}`);
+      this.logger.log(`Order created: ${saved.id} total=${roundedTotalAmount}`);
 
       const messageId = randomUUID();
-      await this.rabbitmqService.publish(ORDER_QUEUE, {
-        messageId,
-        orderId: saved.id,
-        attempt: 0,
-        createdAt: new Date().toISOString(),
-      });
+      await this.rabbitmqService.publish(
+        ORDER_QUEUE,
+        buildOrderMessage({
+          messageId,
+          orderId: saved.id,
+        }),
+      );
       this.logger.log(`Order ${saved.id} published messageId=${messageId}`);
 
       return saved;

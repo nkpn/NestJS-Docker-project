@@ -9,6 +9,7 @@ export const envValidationSchema = Joi.object({
   // Cloud deployments (Neon, Render) provide a single DATABASE_URL.
   // Local Docker uses individual DB_* vars instead.
   DATABASE_URL: Joi.string().optional(),
+  DATABASE_SSL: Joi.string().valid('true', 'false').optional(),
 
   DB_HOST: Joi.string().when('DATABASE_URL', {
     is: Joi.exist(),

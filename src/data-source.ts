@@ -6,13 +6,14 @@ import { resolveEnvFilePath } from './config/env-file';
 dotenv.config({ path: resolveEnvFilePath() });
 
 const hasDatabaseUrl = Boolean(process.env.DATABASE_URL);
+const hasDatabaseSsl = process.env.DATABASE_SSL === 'true';
 
 export default new DataSource({
   type: 'postgres',
   ...(hasDatabaseUrl
     ? {
         url: process.env.DATABASE_URL,
-        ssl: { rejectUnauthorized: false },
+        ...(hasDatabaseSsl ? { ssl: { rejectUnauthorized: false } } : {}),
       }
     : {
         host: process.env.DB_HOST,

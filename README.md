@@ -57,7 +57,7 @@ Order status: PENDING → COMPLETED | FAILED
 - **Prometheus** metrics at `/metrics`
 - **@nestjs/terminus** health checks at `/health`
 - **Docker Compose** for local development
-- **GitHub Actions** — lint, unit tests, e2e tests, Docker build
+- **GitHub Actions** — lint, unit tests, contract tests, integration tests, e2e tests, Docker build
 
 ---
 
@@ -312,6 +312,12 @@ npm run test
 # Unit tests with coverage
 npm run test:cov
 
+# Contract tests for queue message schema
+npm run test:contract
+
+# Integration tests with Testcontainers
+npm run test:integration
+
 # E2E tests (requires PostgreSQL running)
 # 1) Ensure .env.test exists
 # 2) Run Postgres locally (for example: docker compose up -d postgres)
@@ -327,6 +333,7 @@ NODE_ENV=test npm run test:e2e
 | `NODE_ENV` | `development` / `production` / `test` | no (default: `development`) |
 | `PORT` | HTTP port | no (default: `3000`) |
 | `DATABASE_URL` | Full Postgres URL (Neon/Render) — overrides `DB_*` | no |
+| `DATABASE_SSL` | Enable SSL when `DATABASE_URL` is used | no (default: `false`) |
 | `DB_HOST` | PostgreSQL host | yes (if no `DATABASE_URL`) |
 | `DB_PORT` | PostgreSQL port | no (default: `5432`) |
 | `DB_USERNAME` | PostgreSQL user | yes (if no `DATABASE_URL`) |
@@ -364,5 +371,7 @@ Use environment-specific files:
 
 1. **Lint & Build** — `eslint` + `tsc --noEmit`
 2. **Unit Tests** — Jest with coverage report
-3. **E2E Tests** — full order flow against real PostgreSQL service
-4. **Docker Build** — verify production image compiles and starts
+3. **Contract Tests** — queue message schema compatibility for producer/consumer
+4. **Integration Tests** — service layer against real PostgreSQL via Testcontainers
+5. **E2E Tests** — full order flow against real PostgreSQL service
+6. **Docker Build** — verify production image compiles and starts
