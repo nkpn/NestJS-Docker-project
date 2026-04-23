@@ -98,7 +98,7 @@ cd NestJS-Docker-project
 docker compose up --build
 ```
 
-| URL | Description |
+| URL | Description | 
 |---|---|
 | http://localhost:3000/graphql | GraphQL Playground |
 | http://localhost:3000/health | Health check |
