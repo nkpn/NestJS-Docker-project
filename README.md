@@ -357,6 +357,7 @@ Use environment-specific files:
 - Custom metrics: `orders_created_total`, `orders_processed_total{status}`
 - Pino logs: structured JSON in production, pretty-printed in development
 - Consumer logs include `result=success|retry|dlq`, `messageId`, `orderId`, `attempt` on every message
+- Manual prod smoke checklist: [docs/manual-prod-smoke.md](docs/manual-prod-smoke.md)
 
 ---
 

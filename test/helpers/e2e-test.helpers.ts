@@ -11,9 +11,17 @@ import { RabbitmqService } from '../../src/rabbitmq/rabbitmq.service';
 import { User } from '../../src/users/entities/user.entity';
 import { Role } from '../../src/users/enums/role.enum';
 
+type GraphqlError = {
+  message: string;
+  extensions?: {
+    code?: string;
+    message?: string;
+  };
+};
+
 type GraphqlResponse<TData> = {
   data?: TData;
-  errors?: Array<{ message: string }>;
+  errors?: GraphqlError[];
 };
 
 export type E2eContext = {
@@ -102,6 +110,12 @@ export function expectGraphqlSuccess<TData>(res: request.Response): TData {
 export function expectGraphqlErrors(res: request.Response): void {
   const body = res.body as GraphqlResponse<Record<string, unknown>>;
   expect(body.errors).toBeDefined();
+}
+
+export function getGraphqlErrors(res: request.Response): GraphqlError[] {
+  const body = res.body as GraphqlResponse<Record<string, unknown>>;
+  expect(body.errors).toBeDefined();
+  return body.errors as GraphqlError[];
 }
 
 export async function registerUser(

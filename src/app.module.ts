@@ -17,6 +17,7 @@ import { UsersModule } from './users/users.module';
 import { ProductsModule } from './products/products.module';
 import { OrdersModule } from './orders/orders.module';
 import { HealthModule } from './health/health.module';
+import { normalizeGraphqlError } from './common/errors/graphql-error.utils';
 
 @Module({
   imports: [
@@ -90,6 +91,8 @@ import { HealthModule } from './health/health.module';
       playground: true,
       introspection: true,
       context: ({ req }: { req: Express.Request }) => ({ req }),
+      formatError: (formattedError, error) =>
+        normalizeGraphqlError(formattedError, error),
     }),
 
     // Feature modules
