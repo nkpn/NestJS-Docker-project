@@ -1,6 +1,7 @@
-import { Catch, HttpException, HttpStatus } from '@nestjs/common';
+import { Catch, HttpException } from '@nestjs/common';
 import { GqlExceptionFilter } from '@nestjs/graphql';
 import { GraphQLError } from 'graphql';
+import { toGraphqlHttpError } from '../errors/graphql-error.utils';
 
 @Catch()
 export class GqlHttpExceptionFilter implements GqlExceptionFilter {
@@ -10,20 +11,14 @@ export class GqlHttpExceptionFilter implements GqlExceptionFilter {
     }
 
     if (exception instanceof HttpException) {
-      const status = exception.getStatus();
-      const response = exception.getResponse();
-      const message =
-        typeof response === 'object' && 'message' in response
-          ? (response as { message: string | string[] }).message
-          : exception.message;
-      return new GraphQLError(
-        Array.isArray(message) ? message.join(', ') : message,
-        { extensions: { code: status } },
-      );
+      return toGraphqlHttpError(exception);
     }
 
     return new GraphQLError('Internal server error', {
-      extensions: { code: HttpStatus.INTERNAL_SERVER_ERROR },
+      extensions: {
+        code: 'INTERNAL_SERVER_ERROR',
+        message: 'Internal server error',
+      },
     });
   }
 }

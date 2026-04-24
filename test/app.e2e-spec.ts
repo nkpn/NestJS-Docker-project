@@ -7,6 +7,7 @@ import {
   clearDatabase,
   createOrder,
   createProduct,
+  getGraphqlErrors,
   expectGraphqlErrors,
   expectGraphqlSuccess,
   gql,
@@ -140,7 +141,12 @@ describe('Order flow (e2e)', () => {
       { id: order.id },
       otherUser.accessToken,
     );
-    expectGraphqlErrors(forbiddenRes);
+    const [forbiddenError] = getGraphqlErrors(forbiddenRes);
+    expect(forbiddenError.message).toBe('You can only view your own orders');
+    expect(forbiddenError.extensions?.code).toBe('FORBIDDEN');
+    expect(forbiddenError.extensions?.message).toBe(
+      'You can only view your own orders',
+    );
   });
 
   it('rejects invalid createOrder input', async () => {
@@ -163,6 +169,57 @@ describe('Order flow (e2e)', () => {
     );
 
     expectGraphqlErrors(res);
+  });
+
+  it('formats GraphQL variable validation errors with code and message', async () => {
+    const res = await gql(
+      app,
+      `
+        mutation Login($input: LoginInput!) {
+          login(input: $input) {
+            accessToken
+          }
+        }
+      `,
+      {
+        input: {
+          email: 'buyer@example.com',
+          name: 'Buyer',
+          password: 'secret123',
+        },
+      },
+    );
+
+    const [error] = getGraphqlErrors(res);
+
+    expect(error.message).toContain('Field "name" is not defined');
+    expect(error.extensions?.code).toBe('BAD_USER_INPUT');
+    expect(error.extensions?.message).toBe(error.message);
+  });
+
+  it('formats HttpException-based GraphQL errors with code and message', async () => {
+    const res = await gql(
+      app,
+      `
+        mutation Login($input: LoginInput!) {
+          login(input: $input) {
+            accessToken
+          }
+        }
+      `,
+      {
+        input: {
+          email: 'missing@example.com',
+          password: 'wrong-password',
+        },
+      },
+    );
+
+    const [error] = getGraphqlErrors(res);
+
+    expect(error.message).toBe('Invalid credentials');
+    expect(error.extensions?.code).toBe('UNAUTHENTICATED');
+    expect(error.extensions?.message).toBe('Invalid credentials');
   });
 
   it('rejects order creation when stock is insufficient', async () => {
