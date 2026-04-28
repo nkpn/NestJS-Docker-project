@@ -1,0 +1,506 @@
+{
+  "communities": {
+    "0": [
+      "create_order_input_createorderinput",
+      "order_entity_order",
+      "order_entity_storedorderitem",
+      "order_item_input_orderiteminput",
+      "order_status_enum_orderstatus",
+      "orders_connection_ordersconnection",
+      "orders_connection_pageinfo",
+      "orders_filter_input_ordersfilterinput",
+      "orders_module_ordersmodule",
+      "orders_pagination_input_orderspaginationinput",
+      "orders_resolver_ordersresolver",
+      "orders_resolver_ordersresolver_constructor",
+      "orders_resolver_ordersresolver_createorder",
+      "orders_resolver_ordersresolver_myorders",
+      "orders_resolver_ordersresolver_orders",
+      "orders_service_ordersservice",
+      "orders_service_ordersservice_applyfilters",
+      "orders_service_ordersservice_constructor",
+      "orders_service_ordersservice_findallpaginated",
+      "orders_service_ordersservice_findbyuserpaginated",
+      "orders_service_ordersservice_validatedaterange",
+      "orders_service_spec_ordersservicespec",
+      "processed_message_entity_processedmessage",
+      "readme_db_indexes_rationale",
+      "readme_exactly_once_rationale",
+      "readme_idempotency_rationale",
+      "readme_nestjs_orders_api",
+      "readme_pessimistic_locking_rationale",
+      "src_orders_dto_create_order_input_ts",
+      "src_orders_dto_order_item_input_ts",
+      "src_orders_dto_orders_connection_ts",
+      "src_orders_dto_orders_filter_input_ts",
+      "src_orders_dto_orders_pagination_input_ts",
+      "src_orders_entities_order_entity_ts",
+      "src_orders_entities_processed_message_entity_ts",
+      "src_orders_orders_module_ts",
+      "src_orders_orders_resolver_ts",
+      "src_orders_orders_service_ts"
+    ],
+    "1": [
+      "money_roundmoney",
+      "money_spec_roundmoney_tests",
+      "order_message_contract_buildordermessage",
+      "order_message_contract_ordermessage",
+      "order_message_contract_parseordermessage",
+      "orders_consumer_ordersconsumer",
+      "orders_consumer_ordersconsumer_constructor",
+      "orders_consumer_ordersconsumer_handlemessage",
+      "orders_consumer_ordersconsumer_onmoduleinit",
+      "orders_service_ordersservice_createorder",
+      "orders_service_ordersservice_failorder",
+      "orders_service_ordersservice_processorder",
+      "rabbitmq_module_rabbitmqmodule",
+      "rabbitmq_service_max_retry_attempts",
+      "rabbitmq_service_order_dlq",
+      "rabbitmq_service_order_queue",
+      "rabbitmq_service_order_retry_queue",
+      "rabbitmq_service_rabbitmqservice",
+      "rabbitmq_service_rabbitmqservice_connect",
+      "rabbitmq_service_rabbitmqservice_constructor",
+      "rabbitmq_service_rabbitmqservice_consume",
+      "rabbitmq_service_rabbitmqservice_onmoduledestroy",
+      "rabbitmq_service_rabbitmqservice_onmoduleinit",
+      "rabbitmq_service_rabbitmqservice_publish",
+      "rabbitmq_service_rabbitmqservice_publishtodlq",
+      "rabbitmq_service_rabbitmqservice_publishtoretry",
+      "readme_retry_backoff_rationale",
+      "src_common_utils_money_ts",
+      "src_orders_contracts_order_message_contract_ts",
+      "src_orders_orders_consumer_ts",
+      "src_rabbitmq_rabbitmq_module_ts",
+      "src_rabbitmq_rabbitmq_service_ts"
+    ],
+    "2": [
+      "auth_service_authservice",
+      "auth_service_authservice_constructor",
+      "auth_service_authservice_login",
+      "auth_service_authservice_register",
+      "auth_service_authservice_signtoken",
+      "e2e_test_helpers_seedadmin",
+      "role_enum_role",
+      "src_auth_auth_service_ts",
+      "src_users_entities_user_entity_ts",
+      "src_users_users_module_ts",
+      "src_users_users_resolver_ts",
+      "src_users_users_service_ts",
+      "user_entity_user",
+      "users_module_usersmodule",
+      "users_resolver_usersresolver",
+      "users_resolver_usersresolver_me",
+      "users_service_usersservice",
+      "users_service_usersservice_constructor",
+      "users_service_usersservice_create",
+      "users_service_usersservice_findbyemail",
+      "users_service_usersservice_findbyid",
+      "users_service_usersservice_validatepassword"
+    ],
+    "3": [
+      "jwt_strategy_jwtstrategy_validate",
+      "orders_resolver_ordersresolver_order",
+      "orders_service_ordersservice_findbyid",
+      "products_resolver_productsresolver",
+      "products_resolver_productsresolver_constructor",
+      "products_resolver_productsresolver_createproduct",
+      "products_resolver_productsresolver_product",
+      "products_resolver_productsresolver_products",
+      "products_resolver_productsresolver_updatestock",
+      "products_service_productsservice",
+      "products_service_productsservice_constructor",
+      "products_service_productsservice_create",
+      "products_service_productsservice_decrementstock",
+      "products_service_productsservice_findall",
+      "products_service_productsservice_findbyid",
+      "products_service_productsservice_updatestock",
+      "src_products_products_resolver_ts",
+      "src_products_products_service_ts"
+    ],
+    "4": [
+      "auth_response_authresponse",
+      "authmodule_authmodule",
+      "authresolver_authresolver",
+      "authservice_authservice",
+      "configuration_default",
+      "current_user_decorator_currentuser",
+      "gql_auth_guard_gqlauthguard",
+      "gql_auth_guard_gqlauthguard_getrequest",
+      "jwt_strategy_jwtpayload",
+      "jwt_strategy_jwtstrategy",
+      "jwt_strategy_jwtstrategy_constructor",
+      "login_input_logininput",
+      "register_input_registerinput",
+      "src_auth_dto_auth_response_ts",
+      "src_auth_dto_login_input_ts",
+      "src_auth_dto_register_input_ts",
+      "src_auth_guards_gql_auth_guard_ts",
+      "src_auth_strategies_jwt_strategy_ts"
+    ],
+    "5": [
+      "app_e2e_spec",
+      "app_module",
+      "config_envfile",
+      "config_envvalidation",
+      "contract_spec",
+      "create_product_input",
+      "data_source",
+      "e2e_test_helpers",
+      "integration_test_helpers",
+      "main_bootstrap",
+      "orders_integration_spec",
+      "product_entity",
+      "products_module",
+      "products_resolver",
+      "products_service",
+      "src_main_ts",
+      "update_stock_input"
+    ],
+    "6": [
+      "e2e_test_helpers_bootstrape2eapp",
+      "e2e_test_helpers_cleardatabase",
+      "e2e_test_helpers_createorder",
+      "e2e_test_helpers_createproduct",
+      "e2e_test_helpers_expectgraphqlerrors",
+      "e2e_test_helpers_expectgraphqlsuccess",
+      "e2e_test_helpers_getgraphqlerrors",
+      "e2e_test_helpers_gql",
+      "e2e_test_helpers_loginuser",
+      "e2e_test_helpers_registeruser",
+      "test_helpers_e2e_test_helpers_ts"
+    ],
+    "7": [
+      "gql_exception_filter_gqlhttpexceptionfilter",
+      "gql_exception_filter_gqlhttpexceptionfilter_catch",
+      "graphql_error_utils_getgraphqlcode",
+      "graphql_error_utils_gethttpexceptionmessage",
+      "graphql_error_utils_isrecord",
+      "graphql_error_utils_normalizegraphqlerror",
+      "graphql_error_utils_normalizemessage",
+      "graphql_error_utils_spec_tests",
+      "graphql_error_utils_tographqlhttperror",
+      "src_common_errors_graphql_error_utils_ts",
+      "src_common_filters_gql_exception_filter_ts"
+    ],
+    "8": [
+      "auth_resolver_authresolver",
+      "auth_resolver_authresolver_constructor",
+      "auth_resolver_authresolver_login",
+      "auth_resolver_authresolver_register",
+      "orders_integration_spec_authservice",
+      "orders_integration_spec_ordersservice",
+      "orders_integration_spec_productsservice",
+      "orders_integration_spec_registeruser",
+      "src_auth_auth_resolver_ts",
+      "test_integration_orders_integration_spec_ts"
+    ],
+    "9": [
+      "health_controller_healthcontroller",
+      "health_controller_healthcontroller_check",
+      "health_controller_healthcontroller_constructor",
+      "health_controller_healthcontroller_rabbitmqhealthindicator",
+      "health_module_healthmodule",
+      "rabbitmq_service_rabbitmqservice_ishealthy",
+      "src_health_health_controller_ts",
+      "src_health_health_module_ts"
+    ],
+    "10": [
+      "roles_decorator_roles",
+      "roles_decorator_roles_key",
+      "roles_guard_rolesguard",
+      "roles_guard_rolesguard_canactivate",
+      "roles_guard_rolesguard_constructor",
+      "src_auth_guards_roles_guard_ts",
+      "src_common_decorators_roles_decorator_ts"
+    ],
+    "11": [
+      "orders_service_spec_mockcounter",
+      "orders_service_spec_mockdatasource",
+      "orders_service_spec_mockordersrepo",
+      "orders_service_spec_mockrabbitmqservice",
+      "src_orders_orders_service_spec_ts"
+    ],
+    "12": [
+      "integration_test_helpers_bootstrapintegrationapp",
+      "integration_test_helpers_cleardatabase",
+      "integration_test_helpers_startpostgrescontainer",
+      "test_integration_integration_test_helpers_ts"
+    ],
+    "13": [
+      "app_controller_appcontroller",
+      "app_controller_appcontroller_constructor",
+      "app_controller_appcontroller_gethello",
+      "src_app_controller_ts"
+    ],
+    "14": [
+      "app_service_appservice",
+      "app_service_appservice_gethello",
+      "src_app_service_ts"
+    ],
+    "15": [
+      "app_controller",
+      "app_controller_spec",
+      "app_service"
+    ],
+    "16": [
+      "app_module_appmodule",
+      "src_app_module_ts"
+    ],
+    "17": [
+      "products_module_productsmodule",
+      "src_products_products_module_ts"
+    ],
+    "18": [
+      "src_products_dto_update_stock_input_ts",
+      "update_stock_input_updatestockinput"
+    ],
+    "19": [
+      "create_product_input_createproductinput",
+      "src_products_dto_create_product_input_ts"
+    ],
+    "20": [
+      "product_entity_product",
+      "src_products_entities_product_entity_ts"
+    ],
+    "21": [
+      "env_file_resolveenvfilepath",
+      "src_config_env_file_ts"
+    ],
+    "22": [
+      "auth_module_authmodule",
+      "src_auth_auth_module_ts"
+    ],
+    "23": [
+      "eslint_config_mjs"
+    ],
+    "24": [
+      "test_app_e2e_spec_ts"
+    ],
+    "25": [
+      "test_setup_env_ts"
+    ],
+    "26": [
+      "test_contract_order_message_contract_spec_ts"
+    ],
+    "27": [
+      "src_app_controller_spec_ts"
+    ],
+    "28": [
+      "src_data_source_ts"
+    ],
+    "29": [
+      "src_config_env_validation_ts"
+    ],
+    "30": [
+      "src_config_configuration_ts"
+    ],
+    "31": [
+      "src_common_decorators_current_user_decorator_ts"
+    ],
+    "32": [
+      "src_common_utils_money_spec_ts"
+    ],
+    "33": [
+      "src_common_errors_graphql_error_utils_spec_ts"
+    ],
+    "34": [
+      "src_users_enums_role_enum_ts"
+    ],
+    "35": [
+      "src_orders_enums_order_status_enum_ts"
+    ],
+    "36": [
+      "eslint_config"
+    ],
+    "37": [
+      "setup_env"
+    ]
+  },
+  "cohesion": {
+    "0": 0.09,
+    "1": 0.08,
+    "2": 0.12,
+    "3": 0.12,
+    "4": 0.16,
+    "5": 0.21,
+    "6": 0.33,
+    "7": 0.38,
+    "8": 0.22,
+    "9": 0.25,
+    "10": 0.33,
+    "11": 0.4,
+    "12": 0.5,
+    "13": 0.5,
+    "14": 0.67,
+    "15": 1.0,
+    "16": 1.0,
+    "17": 1.0,
+    "18": 1.0,
+    "19": 1.0,
+    "20": 1.0,
+    "21": 1.0,
+    "22": 1.0,
+    "23": 1.0,
+    "24": 1.0,
+    "25": 1.0,
+    "26": 1.0,
+    "27": 1.0,
+    "28": 1.0,
+    "29": 1.0,
+    "30": 1.0,
+    "31": 1.0,
+    "32": 1.0,
+    "33": 1.0,
+    "34": 1.0,
+    "35": 1.0,
+    "36": 1.0,
+    "37": 1.0
+  },
+  "gods": [
+    {
+      "id": "orders_service_ordersservice",
+      "label": "OrdersService",
+      "degree": 27
+    },
+    {
+      "id": "rabbitmq_service_rabbitmqservice",
+      "label": "RabbitmqService",
+      "degree": 17
+    },
+    {
+      "id": "orders_resolver_ordersresolver",
+      "label": "OrdersResolver",
+      "degree": 15
+    },
+    {
+      "id": "order_entity_order",
+      "label": "Order",
+      "degree": 12
+    },
+    {
+      "id": "users_service_usersservice",
+      "label": "UsersService",
+      "degree": 11
+    },
+    {
+      "id": "orders_consumer_ordersconsumer",
+      "label": "OrdersConsumer",
+      "degree": 10
+    },
+    {
+      "id": "products_service",
+      "label": "ProductsService",
+      "degree": 9
+    },
+    {
+      "id": "app_module",
+      "label": "AppModule (Root Module)",
+      "degree": 8
+    },
+    {
+      "id": "products_service_productsservice",
+      "label": "ProductsService",
+      "degree": 7
+    },
+    {
+      "id": "jwt_strategy_jwtstrategy",
+      "label": "JwtStrategy",
+      "degree": 7
+    }
+  ],
+  "surprises": [
+    {
+      "source": "NestJS Orders API README",
+      "target": "OrdersConsumer",
+      "source_files": [
+        "README.md",
+        "/Users/nkpn/Documents/GitHub/NestJS-Docker-project/src/orders/orders.consumer.ts"
+      ],
+      "confidence": "EXTRACTED",
+      "relation": "references",
+      "why": "crosses file types (code \u2194 doc); connects across different repos/directories; bridges separate communities"
+    },
+    {
+      "source": "Rationale: Retry Queue with Exponential Backoff",
+      "target": "OrdersConsumer",
+      "source_files": [
+        "README.md",
+        "/Users/nkpn/Documents/GitHub/NestJS-Docker-project/src/orders/orders.consumer.ts"
+      ],
+      "confidence": "EXTRACTED",
+      "relation": "rationale_for",
+      "why": "crosses file types (code \u2194 doc); connects across different repos/directories; peripheral node `Rationale: Retry Queue with Exponential Backoff` unexpectedly reaches hub `OrdersConsumer`"
+    },
+    {
+      "source": "Rationale: Pessimistic Locking for Oversell Prevention",
+      "target": "OrdersService",
+      "source_files": [
+        "README.md",
+        "/Users/nkpn/Documents/GitHub/NestJS-Docker-project/src/orders/orders.service.ts"
+      ],
+      "confidence": "EXTRACTED",
+      "relation": "rationale_for",
+      "why": "crosses file types (code \u2194 doc); connects across different repos/directories; peripheral node `Rationale: Pessimistic Locking for Oversell Prevention` unexpectedly reaches hub `OrdersService`"
+    },
+    {
+      "source": "Rationale: Request-Level Idempotency via idempotencyKey",
+      "target": "CreateOrderInput",
+      "source_files": [
+        "README.md",
+        "/Users/nkpn/Documents/GitHub/NestJS-Docker-project/src/orders/dto/create-order.input.ts"
+      ],
+      "confidence": "EXTRACTED",
+      "relation": "rationale_for",
+      "why": "crosses file types (code \u2194 doc); connects across different repos/directories; peripheral node `Rationale: Request-Level Idempotency via idempotencyKey` unexpectedly reaches hub `CreateOrderInput`"
+    },
+    {
+      "source": "Rationale: At-least-once delivery + Exactly-once processing via processed_messages",
+      "target": "ProcessedMessage",
+      "source_files": [
+        "README.md",
+        "/Users/nkpn/Documents/GitHub/NestJS-Docker-project/src/orders/entities/processed-message.entity.ts"
+      ],
+      "confidence": "EXTRACTED",
+      "relation": "rationale_for",
+      "why": "crosses file types (code \u2194 doc); connects across different repos/directories; peripheral node `Rationale: At-least-once delivery + Exactly-once processing via processed_messages` unexpectedly reaches hub `ProcessedMessage`"
+    }
+  ],
+  "questions": [
+    {
+      "type": "bridge_node",
+      "question": "Why does `OrdersService` connect `Community 0` to `Community 1`, `Community 2`, `Community 3`?",
+      "why": "High betweenness centrality (0.246) - this node is a cross-community bridge."
+    },
+    {
+      "type": "bridge_node",
+      "question": "Why does `RabbitmqService` connect `Community 1` to `Community 9`, `Community 4`?",
+      "why": "High betweenness centrality (0.128) - this node is a cross-community bridge."
+    },
+    {
+      "type": "bridge_node",
+      "question": "Why does `UsersService` connect `Community 2` to `Community 0`?",
+      "why": "High betweenness centrality (0.119) - this node is a cross-community bridge."
+    },
+    {
+      "type": "verify_inferred",
+      "question": "Are the 4 inferred relationships involving `OrdersService` (e.g. with `OrdersConsumer` and `ProcessedMessage`) actually correct?",
+      "why": "`OrdersService` has 4 INFERRED edges - model-reasoned connections that need verification."
+    },
+    {
+      "type": "isolated_nodes",
+      "question": "What connects `AppModule`, `ProductsModule`, `UpdateStockInput` to the rest of the system?",
+      "why": "18 weakly-connected nodes found - possible documentation gaps or missing edges."
+    },
+    {
+      "type": "low_cohesion",
+      "question": "Should `Community 0` be split into smaller, more focused modules?",
+      "why": "Cohesion score 0.09 - nodes in this community are weakly interconnected."
+    },
+    {
+      "type": "low_cohesion",
+      "question": "Should `Community 1` be split into smaller, more focused modules?",
+      "why": "Cohesion score 0.08 - nodes in this community are weakly interconnected."
+    }
+  ]
+}
